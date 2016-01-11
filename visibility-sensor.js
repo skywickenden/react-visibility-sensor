@@ -71,7 +71,9 @@ module.exports = React.createClass({
    * Check if the element is within the visible viewport
    */
   check: function () {
-    var el = ReactDOM.findDOMNode(this);
+  	// For some reason ReactDOM.findDOMNode(this) is 
+  	// returning the child span rather than the parent DOM.
+    var el = ReactDOM.findDOMNode(this).parentNode;
     var rect = el.getBoundingClientRect();
     var containmentRect;
 
