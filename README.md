@@ -1,3 +1,9 @@
+# Fork Readme
+
+Forked to remove the interval chaeck and replace it with a onScroll event.
+
+Also fixed a bug to do with fetching the current component.
+
 React Visibility Sensor
 ====
 
