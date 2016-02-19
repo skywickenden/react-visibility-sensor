@@ -111,7 +111,7 @@ module.exports = React.createClass({
         visibilityRect: visibilityRect
       });
       this.props.onChange(isVisible, visibilityRect);
-    }con
+    }
     return this.state;
   },
 
