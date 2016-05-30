@@ -18,8 +18,7 @@ module.exports = React.createClass({
     partialVisibility: React.PropTypes.bool,
     delay: React.PropTypes.number,
     containment: containmentPropType,
-    children: React.PropTypes.element,
-	name: React.PropTypes.string
+    children: React.PropTypes.element
   },
 
   getDefaultProps: function () {
@@ -40,31 +39,44 @@ module.exports = React.createClass({
   },
 
   componentDidMount: function () {
-	window.addEventListener('scroll', this.check);
+    if (this.props.active) {
+      this.startWatching();
+    }
   },
 
   componentWillUnmount: function () {
-	window.removeEventListener('scroll', this.check);
+    this.stopWatching();
   },
 
   componentWillReceiveProps: function (nextProps) {
     if (nextProps.active) {
       this.setState(this.getInitialState());
+      this.startWatching();
     } else {
-      window.removeEventListener('scroll', this.check);
+      this.stopWatching();
     }
+  },
+
+  startWatching: function () {
+    if (this.interval) { return; }
+    this.interval = setInterval(this.check, this.props.delay);
+    this.check();
+  },
+
+  stopWatching: function () {
+    this.interval = clearInterval(this.interval);
   },
 
   /**
    * Check if the element is within the visible viewport
    */
   check: function () {
-	// For some reason ReactDOM.findDOMNode(this) is 
-	// returning the child span rather than the parent DOM.
+  	// For some reason ReactDOM.findDOMNode(this) is 
+  	// returning the child span rather than the parent DOM.
     var el = ReactDOM.findDOMNode(this).parentNode;
     var rect = el.getBoundingClientRect();
     var containmentRect;
-	
+
     if (this.props.containment) {
       containmentRect = this.props.containment.getBoundingClientRect();
     } else {
@@ -75,14 +87,14 @@ module.exports = React.createClass({
         right: window.innerWidth || document.documentElement.clientWidth
       };
     }
-	
+
     var visibilityRect = {
       top: rect.top >= containmentRect.top,
       left: rect.left >= containmentRect.left,
       bottom: rect.bottom <= containmentRect.bottom,
       right: rect.right <= containmentRect.right
     };
-	
+
     var fullVisible = (
         visibilityRect.top &&
         visibilityRect.left &&
@@ -112,6 +124,7 @@ module.exports = React.createClass({
       });
       this.props.onChange(isVisible, visibilityRect);
     }
+
     return this.state;
   },
 
